@@ -2,6 +2,7 @@ import os
 import discord
 import logging
 
+from game import Game
 from discord.ext import commands
 from dotenv import load_dotenv
 from typing import Final
@@ -20,7 +21,7 @@ class Client(discord.Client):
         for guild in client.guilds:
             if guild.id == GUILD:
                 break
-        print(guild.name)
+        self.game = Game()
 
     async def on_member_join(self, member):
         await member.create_dm()
@@ -29,8 +30,21 @@ class Client(discord.Client):
         )
 
     async def on_message(self, message):
-        if message.content.find(">hello") != -1:
-            await message.channel.send("Welcome stranger")
+        if message.author == self.user:
+            return
+
+        await self.game.interpret_command(
+            message.content,
+            message.channel,
+            message.author
+        )
+
+    async def clear(ctx, number):
+        mgs = [] #Empty list to put all the messages in the log
+        number = int(number) #Converting the amount of messages to delete to an integer
+        async for x in Client.logs_from(ctx.message.channel, limit = number):
+            mgs.append(x)
+        await Client.delete_messages(mgs)
 
 if __name__=="__main__":
     load_dotenv()

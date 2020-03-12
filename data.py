@@ -4,14 +4,14 @@ import os.path
 class Data():
     def __init__(self):
         self.db = {
-            users : {}
+            "users" : {}
         }
 
-        if os.path.isfile("db"):
-            save(self)
+        if not os.path.isfile("db"):
+            self.save()
 
-    async def save(self):
+    def load(self):
         self.db = pickle.load(open("db", "rb"))
 
-    async def load(self):
+    def save(self):
         pickle.dump(self.db, open( "db", "wb" ))
