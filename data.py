@@ -11,7 +11,9 @@ class Data():
             self.save()
 
     def load(self):
+        print("LOADING")
         self.db = pickle.load(open("db", "rb"))
 
     def save(self):
-        pickle.dump(self.db, open( "db", "wb" ))
+        print("SAVING")
+        pickle.dump(self.db.copy(), open( "db", "wb" ))
